@@ -42,17 +42,18 @@ function findProduct() {
         message: "Please enter the number of units you would like to purchase."
         }
     ]).then(function(answers) {
-        connection.query("SELECT * FROM products WHERE item_id = ?", itemID, function(res) {
-            amountDue = res[0].price * answer.quantity
+        connection.query("SELECT * FROM products WHERE item_id = ?", [answers.itemID], function(err, res) {
+            if (err) throw err
+            amountDue = res[0].price * answers.quantity
             console.log(amountDue)
-            if (answer.quantity > res[0].stock_quantity) {
+            if (answers.quantity > res[0].stock_quantity) {
                 console.log("Sorry, there is not enough in stock.")
             } else {
-                amountDue = res[0].price * answer.quantity
+                amountDue = res[0].price * answers.quantity
                 console.log("Your total is $" + amountDue.toFixed(2) + ". Thank you for your order!")
             }
         })
-    }).catch(function () {
+    }).catch(function() {
         console.log("Promise Rejected");
    })
 }
